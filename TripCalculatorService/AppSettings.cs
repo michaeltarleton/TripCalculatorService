@@ -2,20 +2,20 @@ namespace TripCalculatorService
 {
     public class LogLevel
     {
-        string Default;
+        public string Default;
     }
     public class Logging
     {
-        LogLevel LogLevel;
+        public LogLevel LogLevel;
     }
     public class ElasticConfig
     {
-        string Host;
+        public string Host;
     }
     public class AppSettings
     {
-        Logging Logging;
-        string AllowedHosts;
-        ElasticConfig Elasticsearch;
+        public Logging Logging;
+        public string AllowedHosts;
+        public ElasticConfig ElasticConfig;
     }
 }

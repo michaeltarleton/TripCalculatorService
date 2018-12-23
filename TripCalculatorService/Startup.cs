@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Nest;
 
 namespace TripCalculatorService
 {
@@ -27,7 +28,19 @@ namespace TripCalculatorService
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddOptions();
+
             services.Configure<AppSettings>(Configuration.GetSection(""));
+            services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<AppSettings>>().Value);
+
+            services.AddScoped<IElasticClient>((serviceProvider) =>
+            {
+                var settings = serviceProvider.GetService<AppSettings>();
+                var node = new Uri(settings.ElasticConfig.Host);
+                var config = new ConnectionSettings(node);
+                var client = new ElasticClient(config);
+
+                return client;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
