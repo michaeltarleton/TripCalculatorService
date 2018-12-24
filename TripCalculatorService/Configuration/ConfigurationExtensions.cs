@@ -69,6 +69,8 @@ namespace TripCalculatorService.Configuration
                         )
                     )
                 ));
+
+            client.CreateDocument(Friend.BuildRandomFriend());
         }
     }
 }
