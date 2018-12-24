@@ -3,6 +3,7 @@ using Elasticsearch.Net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Nest;
 using TripCalculatorService;
 using TripCalculatorService.Entities;
@@ -10,14 +11,13 @@ using TripCalculatorService.Entities;
 namespace TripCalculatorService.Configuration {
     internal static class ConfigurationExtensions {
 
-        internal static TConfig ConfigureStronglyTypedAppSettings<TConfig> (this IServiceCollection services, IConfiguration configuration, TConfig config) where TConfig : class {
+        internal static void ConfigureStronglyTypedAppSettings (this IServiceCollection services, IConfiguration configuration) {
             if (services == null) throw new ArgumentNullException (nameof (services));
             if (configuration == null) throw new ArgumentNullException (nameof (configuration));
-            if (config == null) throw new ArgumentNullException (nameof (config));
 
-            configuration.Bind (config);
-            services.AddSingleton (config);
-            return config;
+            AppSettings settings = new AppSettings ();
+            configuration.Bind (settings);
+            services.AddSingleton<AppSettings> (settings);
         }
 
         internal static void ConfigureElasticSearch (this IServiceCollection services) {
@@ -28,9 +28,14 @@ namespace TripCalculatorService.Configuration {
 
                 if (settings == null) throw new ArgumentNullException (nameof (settings));
 
-                // TODO: Make this production ready
-                // var node = new Uri (settings.ElasticConfig.Host);
-                var config = new ConnectionSettings (new InMemoryConnection ()); // new ConnectionSettings (node);
+                ElasticConfig esConfig = settings.ElasticConfig;
+                if (esConfig == null) throw new ArgumentNullException ("The Elasticsearch configuration was not found!");
+
+                string esHost = settings.ElasticConfig.Host;
+                if (string.IsNullOrWhiteSpace (esHost)) throw new ArgumentNullException ("The Elasticsearch host was not found!");
+
+                var node = new Uri (esHost);
+                var config = new ConnectionSettings (node);
                 var client = new ElasticClient (config);
 
                 return client;

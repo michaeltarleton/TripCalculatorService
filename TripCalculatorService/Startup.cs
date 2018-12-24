@@ -22,16 +22,16 @@ namespace TripCalculatorService {
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices (IServiceCollection services) {
-            AppSettings settings = new AppSettings ();
-
+        public IServiceProvider ConfigureServices (IServiceCollection services) {
             services.AddOptions ();
 
             services.AddMvc ().SetCompatibilityVersion (CompatibilityVersion.Version_2_1);
 
-            services.ConfigureStronglyTypedAppSettings (this.Configuration.GetSection (""), settings);
+            services.ConfigureStronglyTypedAppSettings (this.Configuration);
 
             services.ConfigureElasticSearch ();
+
+            return services.BuildServiceProvider ();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,6 +41,8 @@ namespace TripCalculatorService {
             } else {
                 app.UseHsts ();
             }
+
+            app.SeedElasticsearch ();
 
             app.UseHttpsRedirection ();
             app.UseMvc ();
