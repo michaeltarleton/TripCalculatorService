@@ -37,8 +37,11 @@ namespace TripCalculatorService.Configuration
                 string esHost = settings.ElasticConfig.Host;
                 if (string.IsNullOrWhiteSpace(esHost)) throw new ArgumentNullException("The Elasticsearch host was not found!");
 
+                string esDefaultIndex = settings.ElasticConfig.DefaultIndex;
+                if (string.IsNullOrWhiteSpace(esDefaultIndex)) throw new ArgumentNullException("The Elasticsearch default index was not found!");
+
                 var node   = new Uri(esHost);
-                var config = new ConnectionSettings(node);
+                var config = new ConnectionSettings(node).DefaultIndex(esDefaultIndex);
                 var client = new ElasticClient(config);
 
                 return(client);
@@ -49,9 +52,17 @@ namespace TripCalculatorService.Configuration
         {
             if (app == null) throw new ArgumentNullException(nameof(app));
 
-            IElasticClient client = app.ApplicationServices.GetService <IElasticClient> ();
-            string         index  = "friends";
+            IElasticClient client     = app.ApplicationServices.GetService <IElasticClient> ();
+            AppSettings    settings   = app.ApplicationServices.GetService <AppSettings> ();
+            const int      maxFrineds = 10;
+            Friend[]       friends    = new Friend[maxFrineds];
+            string         index      = settings != null &&
+                                        settings.ElasticConfig != null &&
+                                        string.IsNullOrWhiteSpace(settings.ElasticConfig.DefaultIndex)
+                                        ? settings.ElasticConfig.DefaultIndex
+                                        : "friends";
 
+            // Remove then create the index
             client.DeleteIndex(index);
 
             client.CreateIndex(index, c => c.Mappings(ms => ms
@@ -70,7 +81,17 @@ namespace TripCalculatorService.Configuration
                     )
                 ));
 
-            client.CreateDocument(Friend.BuildRandomFriend());
+            // Bulk insert random friends; bulk for performance
+            for (int i = 0; i < maxFrineds; i++)
+            {
+                friends[i] = Friend.BuildRandomFriend(i);
+            }
+
+            client.Bulk((s) => {
+                // for (int i = 0; i < maxFrineds; i++) { s.Index <Friend>(f => f.Document(friends[i])); }
+                // return(s);
+                return(s.IndexMany(friends));
+            });
         }
     }
 }

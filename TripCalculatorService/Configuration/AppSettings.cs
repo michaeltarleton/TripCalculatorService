@@ -11,6 +11,7 @@ namespace TripCalculatorService.Configuration
     public class ElasticConfig
     {
         public string Host { get; set; }
+        public string DefaultIndex { get; set; }
     }
     public class AppSettings
     {

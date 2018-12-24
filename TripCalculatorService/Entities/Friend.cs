@@ -9,9 +9,9 @@ namespace TripCalculatorService.Entities
 
         public List <PurchaseItem> PurchasedItems { get; set; }
 
-        public static Friend RandomFriend()
+        public static Friend BuildRandomFriend(int seed = 0)
         {
-            Random random = new Random();
+            Random random = new Random(seed);
 
             string[]       names = { "Sam", "Fred", "James", "John", "Sarah", "Jill" };
             PurchaseItem[] items =
