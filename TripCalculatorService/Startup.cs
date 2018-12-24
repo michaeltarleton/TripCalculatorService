@@ -26,21 +26,15 @@ namespace TripCalculatorService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            AppSettings settings = new AppSettings();
+
             services.AddOptions();
 
-            services.Configure<AppSettings>(Configuration.GetSection(""));
-            services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<AppSettings>>().Value);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddScoped<IElasticClient>((serviceProvider) =>
-            {
-                var settings = serviceProvider.GetService<AppSettings>();
-                var node = new Uri(settings.ElasticConfig.Host);
-                var config = new ConnectionSettings(node);
-                var client = new ElasticClient(config);
+            services.ConfigureStronglyTypedAppSettings(this.Configuration.GetSection(""), settings);
 
-                return client;
-            });
+            services.ConfigureElasticSearch();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

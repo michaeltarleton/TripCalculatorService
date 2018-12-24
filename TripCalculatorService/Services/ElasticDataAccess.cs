@@ -1,22 +1,39 @@
 using System;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Nest;
+using TripCalculatorService;
 
-namespace ElasticDataAccess
+namespace TripCalculatorService
 {
-    internal class ElasticDataAccessClient
+    internal static class DataAccessExtentionMethods
     {
-        private readonly IConfiguration _configuration;
-        private readonly ElasticClient _client;
-        public ElasticDataAccessClient(IConfiguration configuration)
+        internal static TConfig ConfigureStronglyTypedAppSettings<TConfig>(this IServiceCollection services, IConfiguration configuration, TConfig config) where TConfig : class
         {
-            this._configuration = configuration;
-        }
+            if (services == null) throw new ArgumentNullException(nameof(services));
+            if (configuration == null) throw new ArgumentNullException(nameof(configuration));
+            if (config == null) throw new ArgumentNullException(nameof(config));
 
-        public ElastiClient Build()
+            configuration.Bind(config);
+            services.AddSingleton(config);
+            return config;
+        }
+        internal static void ConfigureElasticSearch(this IServiceCollection services)
         {
-            var node = new Uri(this._configuration.get);
-            var settings = new ConnectionSettings(node);
-            var client = new ElasticClient(settings);
+            if (services == null) throw new ArgumentNullException(nameof(services));
+
+            services.AddScoped<IElasticClient>((s) =>
+            {
+                var settings = s.GetService<AppSettings>();
+
+                if (settings == null) throw new ArgumentNullException(nameof(settings));
+
+                var node = new Uri(settings.ElasticConfig.Host);
+                var config = new ConnectionSettings(node);
+                var client = new ElasticClient(config);
+
+                return client;
+            });
         }
     }
 }
