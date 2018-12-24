@@ -52,15 +52,13 @@ namespace TripCalculatorService.Configuration
         {
             if (app == null) throw new ArgumentNullException(nameof(app));
 
-            IElasticClient client     = app.ApplicationServices.GetService <IElasticClient> ();
-            AppSettings    settings   = app.ApplicationServices.GetService <AppSettings> ();
-            const int      maxFrineds = 10;
-            Friend[]       friends    = new Friend[maxFrineds];
-            string         index      = settings != null &&
-                                        settings.ElasticConfig != null &&
-                                        string.IsNullOrWhiteSpace(settings.ElasticConfig.DefaultIndex)
-                                        ? settings.ElasticConfig.DefaultIndex
-                                        : "friends";
+            IElasticClient client   = app.ApplicationServices.GetService <IElasticClient> ();
+            AppSettings    settings = app.ApplicationServices.GetService <AppSettings> ();
+            string         index    = settings != null &&
+                                      settings.ElasticConfig != null &&
+                                      string.IsNullOrWhiteSpace(settings.ElasticConfig.DefaultIndex)
+                                      ? settings.ElasticConfig.DefaultIndex
+                                      : "friends";
 
             // Remove then create the index
             client.DeleteIndex(index);
@@ -82,13 +80,9 @@ namespace TripCalculatorService.Configuration
                 ));
 
             // Bulk insert random friends; bulk for performance
-            for (int i = 0; i < maxFrineds; i++)
-            {
-                friends[i] = Friend.BuildRandomFriend(i);
-            }
 
             client.Bulk((s) => {
-                return(s.IndexMany(friends));
+                return(s.IndexMany(Friend.BuildRandomFriends(10)));
             });
         }
     }

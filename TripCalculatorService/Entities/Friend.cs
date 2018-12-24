@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace TripCalculatorService.Entities
 {
-    public class Friend : BaseEntity, IEqualityComparer <Friend>
+    public class Friend : BaseEntity, IEquatable <Friend>
     {
         public string Name { get; set; }
 
@@ -39,18 +39,20 @@ namespace TripCalculatorService.Entities
 
         public static IEnumerable <Friend> BuildRandomFriends(int maxFrineds = 10)
         {
-            List <Friend> friends = new List <Friend>();
+            Friend[] friends = new Friend[maxFrineds];
 
             for (int i = 0; i < maxFrineds; i++)
             {
                 friends[i] = Friend.BuildRandomFriend(i);
             }
 
-            return(friends.Distinct());
+            var distinct = (friends.Distinct());
+
+            return(distinct);
         }
 
-        public bool Equals(Friend x, Friend y) { return(x.GetHashCode() == y.GetHashCode()); }
+        public bool Equals(Friend other) { return(this.GetHashCode() == other.GetHashCode()); }
 
-        public int GetHashCode(Friend obj) { return(HashCode.Combine(obj.Id, obj.Name)); }
+        public override int GetHashCode() { return(Name.GetHashCode()); }
     }
 }
