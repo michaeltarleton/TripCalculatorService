@@ -1,8 +1,8 @@
 namespace TripCalculatorService.Entities
 {
-    public class PurchaseItem : BaseEntity
+    public class PurchaseItem
     {
-        public string Name;
-        public decimal Price;
+        public string Name { get; set; }
+        public decimal Price { get; set; }
     }
 }

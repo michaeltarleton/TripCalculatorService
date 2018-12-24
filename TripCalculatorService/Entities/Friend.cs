@@ -4,8 +4,8 @@ namespace TripCalculatorService.Entities
 {
     public class Friend : BaseEntity
     {
-        public string Name;
+        public string Name { get; set; }
 
-        public readonly List <PurchaseItem> AmountsPaid;
+        public List <PurchaseItem> AmountsPaid { get; set; }
     }
 }

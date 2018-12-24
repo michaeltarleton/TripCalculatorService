@@ -50,16 +50,19 @@ namespace TripCalculatorService.Configuration
             if (app == null) throw new ArgumentNullException(nameof(app));
 
             IElasticClient client = app.ApplicationServices.GetService <IElasticClient> ();
+            string         index  = "friends";
 
-            client.CreateIndexAsync("friends", c => c.Mappings(ms => ms
-                .Map <Friend> (m => m
-                    .AutoMap()
-                    .Properties(ps => ps
-                        .Text(s => s
-                            .Name(e => e.Id)
-                            .Fields(fs => fs
-                                .Keyword(ss => ss
-                                    .Name("_id")
+            client.DeleteIndex(index);
+
+            client.CreateIndex(index, c => c.Mappings(ms => ms
+                    .Map <Friend> (m => m
+                        .AutoMap()
+                        .Properties(ps => ps
+                            .Text(s => s
+                                .Name(e => e.Id)
+                                .Fields(fs => fs
+                                    .Keyword(ss => ss
+                                        .Name("_id")
                                     )
                                 )
                             )
