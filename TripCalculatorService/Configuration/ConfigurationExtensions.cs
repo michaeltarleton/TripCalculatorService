@@ -88,8 +88,6 @@ namespace TripCalculatorService.Configuration
             }
 
             client.Bulk((s) => {
-                // for (int i = 0; i < maxFrineds; i++) { s.Index <Friend>(f => f.Document(friends[i])); }
-                // return(s);
                 return(s.IndexMany(friends));
             });
         }
