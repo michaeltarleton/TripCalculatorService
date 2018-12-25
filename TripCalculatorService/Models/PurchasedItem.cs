@@ -7,5 +7,10 @@ namespace TripCalculatorService.Models
         public Guid Id { get; set; }
         public string Name;
         public decimal Price;
+
+        public PurchasedItem()
+        {
+            Id = new Guid();
+        }
     }
 }
