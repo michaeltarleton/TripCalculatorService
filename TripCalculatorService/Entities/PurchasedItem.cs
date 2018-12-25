@@ -10,7 +10,7 @@ namespace TripCalculatorService.Entities
 
         public PurchasedItem()
         {
-            Id = new Guid();
+            Id = Guid.NewGuid();
         }
     }
 }
