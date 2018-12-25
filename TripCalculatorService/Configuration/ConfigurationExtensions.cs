@@ -63,21 +63,7 @@ namespace TripCalculatorService.Configuration
             // Remove then create the index
             client.DeleteIndex(index);
 
-            client.CreateIndex(index, c => c.Mappings(ms => ms
-                    .Map<Friend> (m => m
-                        .AutoMap()
-                        .Properties(ps => ps
-                            .Text(s => s
-                                .Name(e => e.Id)
-                                .Fields(fs => fs
-                                    .Keyword(ss => ss
-                                        .Name("_id")
-                                    )
-                                )
-                            )
-                        )
-                    )
-                ));
+            client.CreateIndex(index, c => c.Mappings(ms => ms.Map<Friend> (m => m.AutoMap())));
 
             // Bulk insert random friends; bulk for performance
 

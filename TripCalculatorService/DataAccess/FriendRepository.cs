@@ -1,6 +1,8 @@
 using Elasticsearch.Net;
 using Nest;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TripCalculatorService.Entities;
 using TripCalculatorService.Interfaces;
@@ -22,7 +24,11 @@ namespace TripCalculatorService.DataAccess
         {
             var result = await _esClient.SearchAsync<Friend>(s => s);
 
-            return result.Documents;
+            return result.Hits.Select(h => {
+                var source = h.Source;
+                source.Id  = h.Id;
+                return source;
+            });
         }
 
         public async Task<Friend> Get(string id)

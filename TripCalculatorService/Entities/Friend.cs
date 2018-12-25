@@ -5,11 +5,11 @@ using System.Linq;
 
 namespace TripCalculatorService.Entities
 {
-    public class Friend : BaseEntity, IEquatable <Friend>
+    public class Friend : BaseEntity, IEquatable<Friend>
     {
         public string Name { get; set; }
 
-        public List <PurchasedItem> PurchasedItems { get; set; }
+        public List<PurchasedItem> PurchasedItems { get; set; }
 
         public static Friend BuildRandomFriend(int seed = 0)
         {
@@ -29,15 +29,13 @@ namespace TripCalculatorService.Entities
 
             Friend friend = new Friend {
                 Name           = randomName,
-                PurchasedItems = new List <PurchasedItem> {
-                    randomPurchase
-                }
+                PurchasedItems = new List<PurchasedItem> { randomPurchase }
             };
 
-            return(friend);
+            return friend;
         }
 
-        public static IEnumerable <Friend> BuildRandomFriends(int maxFrineds = 10)
+        public static IEnumerable<Friend> BuildRandomFriends(int maxFrineds = 10)
         {
             Friend[] friends = new Friend[maxFrineds];
 
@@ -48,11 +46,17 @@ namespace TripCalculatorService.Entities
 
             var distinct = (friends.Distinct());
 
-            return(distinct);
+            return distinct;
         }
 
-        public bool Equals(Friend other) { return(this.GetHashCode() == other.GetHashCode()); }
+        public bool Equals(Friend other)
+        {
+            return this.GetHashCode() == other.GetHashCode();
+        }
 
-        public override int GetHashCode() { return(Name.GetHashCode()); }
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
+        }
     }
 }
