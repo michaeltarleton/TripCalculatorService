@@ -1,5 +1,6 @@
 using entities = TripCalculatorService.Entities;
 using models   = TripCalculatorService.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -41,6 +42,7 @@ namespace TripCalculatorService.Mappers
         public static models.PurchasedItem ToModel(this entities.PurchasedItem purchasedItem)
         {
             return purchasedItem == null ? null : new models.PurchasedItem {
+                       Id    = purchasedItem.Id,
                        Name  = purchasedItem.Name,
                        Price = purchasedItem.Price
             };
@@ -54,6 +56,7 @@ namespace TripCalculatorService.Mappers
         public static entities.PurchasedItem ToEntity(this models.PurchasedItem purchasedItem)
         {
             return purchasedItem == null ? null : new entities.PurchasedItem {
+                       Id    = purchasedItem.Id == null ? new Guid() : purchasedItem.Id,
                        Name  = purchasedItem.Name,
                        Price = purchasedItem.Price
             };
