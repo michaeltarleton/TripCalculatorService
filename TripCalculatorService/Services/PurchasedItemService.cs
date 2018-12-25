@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,11 +25,11 @@ namespace TripCalculatorService.Services
             return friend == null ? null : friend.PurchasedItems;
         }
 
-        public async Task<PurchasedItem> Get(string friendId, string itemName, decimal itemPrice)
+        public async Task<PurchasedItem> Get(string friendId, Guid purchasedItemId)
         {
             Friend friend = (await _repo.Get(friendId)).ToModel();
 
-            return friend == null ? null : friend.PurchasedItems.FirstOrDefault(p => p.Name == itemName && p.Price == itemPrice);
+            return friend == null ? null : friend.PurchasedItems.FirstOrDefault(p => p.Id == purchasedItemId);
         }
 
         public async Task<string> Add(string friendId, PurchasedItem purchasedItem)
@@ -36,9 +37,14 @@ namespace TripCalculatorService.Services
             return await _repo.AddPurchasedItem(friendId, purchasedItem.ToEntity());
         }
 
-        public async Task<string> Remove(string friendId, PurchasedItem purchasedItem)
+        public async Task<string> Remove(string friendId, Guid purchasedItemId)
         {
-            return await _repo.RemovePurchasedItem(friendId, purchasedItem.ToEntity());
+            return await _repo.RemovePurchasedItem(friendId, purchasedItemId);
+        }
+
+        public async Task<string> Update(string friendId, Guid purchasedItemId, PurchasedItem purchasedItem)
+        {
+            return await _repo.UpdatePurchasedItem(friendId, purchasedItemId, purchasedItem.ToEntity());
         }
     }
 }

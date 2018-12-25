@@ -18,10 +18,10 @@ namespace TripCalculatorService.Entities
             string[]        names = { "Sam", "Fred", "James", "John", "Sarah", "Jill" };
             PurchasedItem[] items =
             {
-                new PurchasedItem { Name = "Chips",     Price = 8.00M },
-                new PurchasedItem { Name = "Cheese",    Price = 8.00M },
-                new PurchasedItem { Name = "Soda",      Price = 8.00M },
-                new PurchasedItem { Name = "Chocolate", Price = 8.00M }
+                new PurchasedItem { Id = Guid.NewGuid(), Name = "Chips",     Price = 8.00M },
+                new PurchasedItem { Id = Guid.NewGuid(), Name = "Cheese",    Price = 8.00M },
+                new PurchasedItem { Id = Guid.NewGuid(), Name = "Soda",      Price = 8.00M },
+                new PurchasedItem { Id = Guid.NewGuid(), Name = "Chocolate", Price = 8.00M }
             };
 
             string        randomName     = names[random.Next(0, names.Length - 1)];
