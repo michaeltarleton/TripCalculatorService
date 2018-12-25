@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TripCalculatorService.Configuration;
+using TripCalculatorService.DataAccess;
 
 namespace TripCalculatorService
 {
@@ -34,6 +35,8 @@ namespace TripCalculatorService
             services.ConfigureStronglyTypedAppSettings(this.Configuration);
 
             services.ConfigureElasticSearch();
+
+            services.AddTransient <IFriendRepository, FriendRepository>();
 
             return(services.BuildServiceProvider());
         }

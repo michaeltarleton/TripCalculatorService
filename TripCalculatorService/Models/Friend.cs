@@ -6,12 +6,12 @@ namespace TripCalculatorService.Models
     public class Friend
     {
         public string Name;
-        public readonly List <PurchaseItem> AmountsPaid;
-        public decimal TotalAmountPaid => this.AmountsPaid.Sum(i => i.Price);
+        public List <PurchaseItem> PurchasedItems;
+        public decimal TotalAmountPaid => this.PurchasedItems.Sum(i => i.Price);
 
         public Friend()
         {
-            AmountsPaid = new List <PurchaseItem> ();
+            PurchasedItems = new List <PurchaseItem> ();
         }
     }
 }
