@@ -7,9 +7,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Nest;
+using NSwag.AspNetCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using TripCalculatorService.Configuration;
 using TripCalculatorService.DataAccess;
@@ -42,6 +44,8 @@ namespace TripCalculatorService
             services.AddTransient<IFriendService, FriendService>();
             services.AddTransient<IPurchasedItemService, PurchasedItemService>();
 
+            services.AddSwaggerDocument();
+
             return services.BuildServiceProvider();
         }
 
@@ -55,6 +59,9 @@ namespace TripCalculatorService
 
             app.UseHttpsRedirection();
             app.UseMvc();
+
+            app.UseSwagger();
+            app.UseSwaggerUi3();
         }
     }
 }
