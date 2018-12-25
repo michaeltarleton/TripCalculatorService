@@ -4,50 +4,53 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TripCalculatorService.DataAccess;
+using TripCalculatorService.Interfaces;
 using TripCalculatorService.Mappers;
 using TripCalculatorService.Models;
 
 namespace TripCalculatorService.Controllers
 {
-    [Route("api/friend")]
+    [Route("api/friends")]
     [ApiController]
     public class FriendController : ControllerBase
     {
-        private readonly IFriendRepository _repo;
-        public FriendController(IFriendRepository repo)
+        private readonly IFriendService _service;
+
+        public FriendController(IFriendService service)
         {
-            _repo = repo;
+            _service = service;
         }
 
         [HttpGet]
-        public async Task <ActionResult <IEnumerable <Friend> > > Get()
+        public async Task<ActionResult<IEnumerable<Friend>>> Get()
         {
-            return Ok((await _repo.GetAll()).ToModel());
+            return Ok(await _service.GetAll());
         }
 
-        // GET api/friend/5
         [HttpGet("{id}")]
-        public async Task <ActionResult <Friend> > Get(string id)
+        public async Task<ActionResult<Friend>> Get(string id)
         {
-            return Ok((await _repo.Get(id)).ToModel());
+            return Ok(await _service.Get(id));
         }
 
-        // POST api/friend
         [HttpPost]
-        public async Task <ActionResult> Post([FromBody] Friend friend)
+        public async Task<ActionResult> Post([FromBody] Friend friend)
         {
-            var result = await _repo.AddFriend(friend.ToEntity());
+            string response = await _service.Add(friend);
 
-            return Ok();
+            if (response == null) return BadRequest();
+
+            return Ok(response);
         }
 
-        // DELETE api/friend/5
         [HttpDelete("{id}")]
-        public async Task <ActionResult> Delete(string id)
+        public async Task<ActionResult> Delete(string id)
         {
-            var response = await _repo.RemoveFriend(id);
+            var response = await _service.Remove(id);
 
-            return Ok();
+            if (response == null) return BadRequest();
+
+            return Ok(response);
         }
     }
 }

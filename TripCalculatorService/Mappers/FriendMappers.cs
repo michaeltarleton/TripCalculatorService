@@ -7,14 +7,14 @@ namespace TripCalculatorService.Mappers
 {
     public static class FriendMappers
     {
-        public static IEnumerable <models.Friend> ToModel(this IEnumerable <entities.Friend> entities)
+        public static IEnumerable<models.Friend> ToModel(this IEnumerable<entities.Friend> entities)
         {
             return entities.ToModel();
         }
 
         public static models.Friend ToModel(this entities.Friend entity)
         {
-            return new models.Friend {
+            return entity == null ? null : new models.Friend {
                        Name           = entity.Name,
                        PurchasedItems = entity.PurchasedItems.ToModel().ToList()
             };
@@ -22,25 +22,25 @@ namespace TripCalculatorService.Mappers
 
         public static models.PurchasedItem ToModel(this entities.PurchasedItem purchasedItem)
         {
-            return new models.PurchasedItem {
+            return purchasedItem == null ? null : new models.PurchasedItem {
                        Name  = purchasedItem.Name,
                        Price = purchasedItem.Price
             };
         }
 
-        public static IEnumerable <models.PurchasedItem> ToModel(this IEnumerable <entities.PurchasedItem> purchaseItem)
+        public static IEnumerable<models.PurchasedItem> ToModel(this IEnumerable<entities.PurchasedItem> purchaseItem)
         {
-            return purchaseItem.Select(i => i.ToModel());
+            return purchaseItem == null ? null : purchaseItem.Select(i => i.ToModel());
         }
 
-        public static IEnumerable <entities.Friend> ToModel(this IEnumerable <models.Friend> models)
+        public static IEnumerable<entities.Friend> ToModel(this IEnumerable<models.Friend> models)
         {
-            return models.ToModel();
+            return models == null ? null : models.ToModel();
         }
 
         public static entities.Friend ToEntity(this models.Friend model)
         {
-            return new entities.Friend {
+            return model == null ? null : new entities.Friend {
                        Name           = model.Name,
                        PurchasedItems = model.PurchasedItems.ToEntity().ToList()
             };
@@ -48,15 +48,15 @@ namespace TripCalculatorService.Mappers
 
         public static entities.PurchasedItem ToEntity(this models.PurchasedItem purchasedItem)
         {
-            return new entities.PurchasedItem {
+            return purchasedItem == null ? null : new entities.PurchasedItem {
                        Name  = purchasedItem.Name,
                        Price = purchasedItem.Price
             };
         }
 
-        public static IEnumerable <entities.PurchasedItem> ToEntity(this IEnumerable <models.PurchasedItem> purchasedItems)
+        public static IEnumerable<entities.PurchasedItem> ToEntity(this IEnumerable<models.PurchasedItem> purchasedItems)
         {
-            return purchasedItems.Select(i => i.ToEntity());
+            return purchasedItems == null ? null : purchasedItems.Select(i => i.ToEntity());
         }
     }
 }

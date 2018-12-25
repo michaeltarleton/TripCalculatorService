@@ -13,6 +13,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using TripCalculatorService.Configuration;
 using TripCalculatorService.DataAccess;
+using TripCalculatorService.Interfaces;
+using TripCalculatorService.Services;
 
 namespace TripCalculatorService
 {
@@ -36,9 +38,11 @@ namespace TripCalculatorService
 
             services.ConfigureElasticSearch();
 
-            services.AddTransient <IFriendRepository, FriendRepository>();
+            services.AddTransient<IFriendRepository, FriendRepository>();
+            services.AddTransient<IFriendService, FriendService>();
+            services.AddTransient<IPurchasedItemService, PurchasedItemService>();
 
-            return(services.BuildServiceProvider());
+            return services.BuildServiceProvider();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

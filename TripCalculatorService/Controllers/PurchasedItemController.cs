@@ -4,38 +4,62 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TripCalculatorService.DataAccess;
+using TripCalculatorService.Interfaces;
 using TripCalculatorService.Mappers;
 using TripCalculatorService.Models;
 
 namespace TripCalculatorService.Controllers
 {
-    [Route("api/friend/{id}/purchased")]
+    [Route("api/friend/{friendId}/purchased")]
     [ApiController]
-    public class PurchasedItemController
+    public class PurchasedItemController : ControllerBase
     {
-        private readonly IFriendRepository _repo;
-        public PurchasedItemController(IFriendRepository repo)
+        private readonly IPurchasedItemService _service;
+
+        public PurchasedItemController(IPurchasedItemService service)
         {
-            _repo = repo;
+            _service = service;
         }
 
         [HttpGet]
-        public async Task <IEnumerable <Friend> > Get() { return((await _repo.GetAll()).ToModel()); }
+        public async Task<ActionResult<IEnumerable<PurchasedItem>>> Get(string friendId)
+        {
+            IEnumerable<PurchasedItem> response = await _service.GetAll(friendId);
+
+            if (response == null) return BadRequest();
+
+            return Ok(response);
+        }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public async Task <Friend> Get(string id) { return((await _repo.Get(id)).ToModel()); }
+        public async Task<ActionResult<PurchasedItem>> Get(string friendId, [FromBody] PurchasedItem purchasedItem)
+        {
+            PurchasedItem response = await _service.Get(friendId, purchasedItem.Name, purchasedItem.Price);
 
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody] string value) { }
+            if (response == null) return BadRequest();
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] Friend friend) { }
+            return Ok(response);
+        }
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id) { }
+        [HttpPut("")]
+        public async Task<ActionResult<string>> Post(string friendId, [FromBody] PurchasedItem purchasedItem)
+        {
+            string response = await _service.Add(friendId, purchasedItem);
+
+            if (response == null) return BadRequest();
+
+            return Ok(response);
+        }
+
+        [HttpDelete("")]
+        public async Task<ActionResult<string>> Delete(string friendId, [FromBody] PurchasedItem purchasedItem)
+        {
+            string response = await _service.Remove(friendId, purchasedItem);
+
+            if (response == null) return BadRequest();
+
+            return Ok(response);
+        }
     }
 }
