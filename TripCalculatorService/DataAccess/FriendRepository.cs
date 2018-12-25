@@ -3,6 +3,7 @@ using Nest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using TripCalculatorService.Entities;
 using TripCalculatorService.Interfaces;
@@ -20,92 +21,157 @@ namespace TripCalculatorService.DataAccess
             _esClient = esClient;
         }
 
-        public async Task<IEnumerable<Friend>> GetAll()
+        public async Task<DataAccessResponse<IEnumerable<Friend>>> GetAll()
         {
-            var result = await _esClient.SearchAsync<Friend>(s => s);
+            ISearchResponse<Friend> response = await _esClient.SearchAsync<Friend>(s => s);
 
-            return result.Hits.Select(h => {
+            if (!response.IsValid) return DataAccessResponse.InternalServerError<IEnumerable<Friend>>();
+
+            IEnumerable<Friend> friends = response.Hits.Select(h => {
                 var source = h.Source;
                 source.Id  = h.Id;
                 return source;
             });
+
+            if (friends == null) return DataAccessResponse.NotFound<IEnumerable<Friend>>();
+            if (friends.Count() == 0) return DataAccessResponse.NotFound<IEnumerable<Friend>>();
+
+            return DataAccessResponse.OK(friends);
         }
 
-        public async Task<Friend> Get(string id)
+        public async Task<DataAccessResponse<Friend>> Get(string id)
         {
             IGetResponse<Friend> response = await _esClient.GetAsync<Friend>(id);
 
+            if (!response.IsValid) return DataAccessResponse.InternalServerError<Friend>();
+
             Friend friend = response.Source;
 
-            if (friend == null) return null;
+            if (friend == null) return DataAccessResponse.NotFound<Friend>();
 
             friend.Id = response.Id;
 
-            return friend;
+            return DataAccessResponse.OK(friend);;
         }
 
-        public async Task<string> AddFriend(Friend friend)
+        public async Task<DataAccessResponse<string>> AddFriend(Friend friend)
         {
-            friend.PurchasedItems.ForEach(p => p.Id = Guid.NewGuid());
+            if (friend == null) return DataAccessResponse.NotFound<string>();
+
+            if (friend.PurchasedItems != null) friend.PurchasedItems.ForEach(p => p.Id = Guid.NewGuid());
 
             IIndexResponse response = await _esClient.IndexAsync<Friend>(friend, d => d.Index(_index).Type(_type));
 
-            return response.Id;
+            if (!response.IsValid) return DataAccessResponse.InternalServerError<string>();
+
+            return DataAccessResponse.Created(response.Id);
         }
 
-        public async Task<string> RemoveFriend(string id)
+        public async Task<DataAccessResponse<string>> UpdateFriend(string id, Friend friend)
         {
+            if (friend == null) return DataAccessResponse.NotFound<string>();
+
+            if (friend.PurchasedItems != null) friend.PurchasedItems.ForEach(p => p.Id = Guid.NewGuid());
+
+            IUpdateResponse<Friend> response = await _esClient.UpdateAsync<Friend>(friend, d => d.Index(_index).Type(_type).Doc(friend));
+
+            if (!response.IsValid) return DataAccessResponse.InternalServerError<string>();
+
+            return DataAccessResponse.NoContent(response.Id);
+        }
+
+        public async Task<DataAccessResponse<string>> RemoveFriend(string id)
+        {
+            if (id == null) return DataAccessResponse.NotFound<string>();
+
             IDeleteResponse response = await _esClient.DeleteAsync<Friend>(id);
 
-            return response.IsValid ? response.Id : null;
+            if (!response.IsValid) return DataAccessResponse.InternalServerError<string>();
+            if (response.Id == null) return DataAccessResponse.InternalServerError<string>();
+
+            return DataAccessResponse.NoContent(response.Id);
         }
 
-        public async Task<string> AddPurchasedItem(string friendId, PurchasedItem item)
+        public async Task<DataAccessResponse<string>> AddPurchasedItem(string friendId, PurchasedItem item)
         {
-            Friend friend = await this.Get(friendId);
+            if (friendId == null) return DataAccessResponse.NotFound<string>();
+            if (item == null) return DataAccessResponse.NotFound<string>();
 
-            if (friend == null) return null;
+            var friendResponse = await this.Get(friendId);
+
+            if (friendResponse.Status != HttpStatusCode.OK) return DataAccessResponse.NotFound<string>();
+
+            Friend friend = friendResponse.Payload;
 
             item.Id = Guid.NewGuid();
+
+            friend.PurchasedItems = friend.PurchasedItems == null ? new List<PurchasedItem>() : friend.PurchasedItems;
 
             friend.PurchasedItems.Add(item);
 
             IUpdateResponse<Friend> response = await _esClient.UpdateAsync<Friend>(friendId, d => d.Index(_index).Type(_type).Doc(friend));
 
-            return response.IsValid ? response.Id : null;
+            if (!response.IsValid) return DataAccessResponse.InternalServerError<string>();
+            if (response.Id == null) return DataAccessResponse.InternalServerError<string>();
+
+            return DataAccessResponse.NoContent(response.Id);
         }
 
-        public async Task<string> RemovePurchasedItem(string friendId, Guid purchasedItemId)
+        public async Task<DataAccessResponse<string>> RemovePurchasedItem(string friendId, Guid purchasedItemId)
         {
-            Friend friend = await this.Get(friendId);
+            if (friendId == null) return DataAccessResponse.NotFound<string>();
+            if (purchasedItemId == null) return DataAccessResponse.NotFound<string>();
 
-            if (friend == null) return null;
+            var friendResponse = await this.Get(friendId);
+
+            if (friendResponse.Status != HttpStatusCode.OK) return DataAccessResponse.NotFound<string>();
+
+            Friend friend = friendResponse.Payload;
+
+            if (friend.PurchasedItems == null) return DataAccessResponse.BadRequest<string>();
 
             PurchasedItem purchasedItemToRemove = friend.PurchasedItems.FirstOrDefault(p => p.Id == purchasedItemId);
+
+            if (purchasedItemToRemove == null) return DataAccessResponse.NotFound<string>();
 
             friend.PurchasedItems.Remove(purchasedItemToRemove);
 
             IUpdateResponse<Friend> response = await _esClient.UpdateAsync<Friend>(friendId, d => d.Index(_index).Type(_type).Doc(friend));
 
-            return response.IsValid ? response.Id : null;
+            if (!response.IsValid) return DataAccessResponse.InternalServerError<string>();
+            if (response.Id == null) return DataAccessResponse.InternalServerError<string>();
+
+            return DataAccessResponse.NoContent(response.Id);
         }
 
-        public async Task<string> UpdatePurchasedItem(string friendId, Guid purchasedItemId, PurchasedItem purchasedItem)
+        public async Task<DataAccessResponse<string>> UpdatePurchasedItem(string friendId, Guid purchasedItemId, PurchasedItem purchasedItem)
         {
-            Friend friend = await this.Get(friendId);
+            if (friendId == null) return DataAccessResponse.NotFound<string>();
+            if (purchasedItemId == null) return DataAccessResponse.NotFound<string>();
 
-            if (friend == null) return null;
+            var friendResponse = await this.Get(friendId);
 
-            PurchasedItem purchasedItemToRemove = friend.PurchasedItems.FirstOrDefault(p => p.Id == purchasedItemId);
+            if (friendResponse.Status != HttpStatusCode.OK) return DataAccessResponse.NotFound<string>();
+
+            Friend friend = friendResponse.Payload;
+
+            if (friend.PurchasedItems == null) return DataAccessResponse.BadRequest<string>();
+
+            PurchasedItem purchasedItemToUpdate = friend.PurchasedItems.FirstOrDefault(p => p.Id == purchasedItemId);
+
+            if (purchasedItemToUpdate == null) return DataAccessResponse.NotFound<string>();
 
             purchasedItem.Id = purchasedItemId;
 
-            friend.PurchasedItems.Remove(purchasedItemToRemove);
+            friend.PurchasedItems.Remove(purchasedItemToUpdate);
             friend.PurchasedItems.Add(purchasedItem);
 
             IUpdateResponse<Friend> response = await _esClient.UpdateAsync<Friend>(friendId, d => d.Index(_index).Type(_type).Doc(friend));
 
-            return response.IsValid ? response.Id : null;
+            if (!response.IsValid) return DataAccessResponse.InternalServerError<string>();
+            if (response.Id == null) return DataAccessResponse.InternalServerError<string>();
+
+            return DataAccessResponse.NoContent(response.Id);
         }
     }
 }
