@@ -1,6 +1,6 @@
 namespace TripCalculatorService.Models
 {
-    public class PurchaseItem
+    public class PurchasedItem
     {
         public string Name;
         public decimal Price;

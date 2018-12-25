@@ -20,11 +20,17 @@ namespace TripCalculatorService.Controllers
         }
 
         [HttpGet]
-        public async Task <ActionResult <IEnumerable <Friend> > > Get() { return(Ok((await _repo.GetAll()).ToModel())); }
+        public async Task <ActionResult <IEnumerable <Friend> > > Get()
+        {
+            return Ok((await _repo.GetAll()).ToModel());
+        }
 
         // GET api/friend/5
         [HttpGet("{id}")]
-        public async Task <ActionResult <Friend> > Get(string id) { return(Ok((await _repo.Get(id)).ToModel())); }
+        public async Task <ActionResult <Friend> > Get(string id)
+        {
+            return Ok((await _repo.Get(id)).ToModel());
+        }
 
         // POST api/friend
         [HttpPost]
@@ -32,7 +38,7 @@ namespace TripCalculatorService.Controllers
         {
             var result = await _repo.AddFriend(friend.ToEntity());
 
-            return(Ok());
+            return Ok();
         }
 
         // DELETE api/friend/5
@@ -41,7 +47,7 @@ namespace TripCalculatorService.Controllers
         {
             var response = await _repo.RemoveFriend(id);
 
-            return(Ok());
+            return Ok();
         }
     }
 }

@@ -19,15 +19,15 @@ namespace TripCalculatorService.Configuration
 
             AppSettings settings = new AppSettings();
             configuration.Bind(settings);
-            services.AddSingleton <AppSettings> (settings);
+            services.AddSingleton<AppSettings> (settings);
         }
 
         internal static void ConfigureElasticSearch(this IServiceCollection services)
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
 
-            services.AddScoped <IElasticClient> ((s) => {
-                var settings = s.GetService <AppSettings> ();
+            services.AddScoped<IElasticClient> ((s) => {
+                var settings = s.GetService<AppSettings>();
 
                 if (settings == null) throw new ArgumentNullException(nameof(settings));
 
@@ -44,7 +44,7 @@ namespace TripCalculatorService.Configuration
                 var config = new ConnectionSettings(node).DefaultIndex(esDefaultIndex);
                 var client = new ElasticClient(config);
 
-                return(client);
+                return client;
             });
         }
 
@@ -52,8 +52,8 @@ namespace TripCalculatorService.Configuration
         {
             if (app == null) throw new ArgumentNullException(nameof(app));
 
-            IElasticClient client   = app.ApplicationServices.GetService <IElasticClient> ();
-            AppSettings    settings = app.ApplicationServices.GetService <AppSettings> ();
+            IElasticClient client   = app.ApplicationServices.GetService<IElasticClient>();
+            AppSettings    settings = app.ApplicationServices.GetService<AppSettings>();
             string         index    = settings != null &&
                                       settings.ElasticConfig != null &&
                                       string.IsNullOrWhiteSpace(settings.ElasticConfig.DefaultIndex)
@@ -64,7 +64,7 @@ namespace TripCalculatorService.Configuration
             client.DeleteIndex(index);
 
             client.CreateIndex(index, c => c.Mappings(ms => ms
-                    .Map <Friend> (m => m
+                    .Map<Friend> (m => m
                         .AutoMap()
                         .Properties(ps => ps
                             .Text(s => s
@@ -82,7 +82,7 @@ namespace TripCalculatorService.Configuration
             // Bulk insert random friends; bulk for performance
 
             client.Bulk((s) => {
-                return(s.IndexMany(Friend.BuildRandomFriends(10)));
+                return s.IndexMany(Friend.BuildRandomFriends(10));
             });
         }
     }
