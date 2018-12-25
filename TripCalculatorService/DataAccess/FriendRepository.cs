@@ -62,7 +62,7 @@ namespace TripCalculatorService.DataAccess
 
         public async Task<string> AddFriend(Friend friend)
         {
-            ICreateResponse response = await _esClient.CreateDocumentAsync<Friend>(friend);
+            IIndexResponse response = await _esClient.IndexAsync<Friend>(friend, d => d.Index(_index).Type(_type));
 
             return response.Id;
         }
