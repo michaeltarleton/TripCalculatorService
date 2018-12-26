@@ -13,6 +13,8 @@ namespace TripCalculatorService.Interfaces
         Task<DataAccessResponse<string>> AddFriend(Friend friend);
         Task<DataAccessResponse<string>> UpdateFriend(string id, Friend friend);
         Task<DataAccessResponse<string>> RemoveFriend(string id);
+        Task<DataAccessResponse<PurchasedItem>> GetPurchasedItem(string friendId, Guid purchasedItemId);
+        Task<DataAccessResponse<IEnumerable<PurchasedItem>>> GetAllPurchasedItems(string friendId);
         Task<DataAccessResponse<string>> AddPurchasedItem(string friendId, PurchasedItem purchasedItem);
         Task<DataAccessResponse<string>> RemovePurchasedItem(string friendId, Guid purchasedItemId);
         Task<DataAccessResponse<string>> UpdatePurchasedItem(string friendId, Guid purchasedItemId, PurchasedItem purchasedItem);

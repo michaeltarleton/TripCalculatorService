@@ -16,38 +16,48 @@ namespace TripCalculatorService.DataAccess
         public DataAccessResponse(HttpStatusCode status)
         {
         }
-    }
 
-    public static class DataAccessResponse
-    {
-        public static DataAccessResponse<T> OK<T>(T payload)
+        public DataAccessResponse()
         {
-            return new DataAccessResponse<T>(payload, HttpStatusCode.OK);
         }
 
-        public static DataAccessResponse<T> NotFound<T>()
+        public DataAccessResponse<T> OK(T payload)
         {
-            return new DataAccessResponse<T>(HttpStatusCode.NotFound);
+            this.Payload = payload;
+            this.Status  = HttpStatusCode.OK;
+            return this;
         }
 
-        public static DataAccessResponse<T> Created<T>(T payload)
+        public DataAccessResponse<T> NotFound()
         {
-            return new DataAccessResponse<T>(payload, HttpStatusCode.Created);
+            this.Status = HttpStatusCode.NotFound;
+            return this;
         }
 
-        public static DataAccessResponse<T> NoContent<T>(T payload)
+        public DataAccessResponse<T> Created(T payload)
         {
-            return new DataAccessResponse<T>(payload, HttpStatusCode.NoContent);
+            this.Payload = payload;
+            this.Status  = HttpStatusCode.Created;
+            return this;
         }
 
-        public static DataAccessResponse<T> InternalServerError<T>()
+        public DataAccessResponse<T> NoContent(T payload)
         {
-            return new DataAccessResponse<T>(HttpStatusCode.InternalServerError);
+            this.Payload = payload;
+            this.Status  = HttpStatusCode.NoContent;
+            return this;
         }
 
-        public static DataAccessResponse<T> BadRequest<T>()
+        public DataAccessResponse<T> InternalServerError()
         {
-            return new DataAccessResponse<T>(HttpStatusCode.BadRequest);
+            this.Status = HttpStatusCode.InternalServerError;
+            return this;
+        }
+
+        public DataAccessResponse<T> BadRequest()
+        {
+            this.Status = HttpStatusCode.BadRequest;
+            return this;
         }
     }
 }
