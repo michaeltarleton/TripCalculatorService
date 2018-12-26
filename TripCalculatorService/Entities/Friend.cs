@@ -44,7 +44,7 @@ namespace TripCalculatorService.Entities
                 friends[i] = Friend.BuildRandomFriend(i);
             }
 
-            var distinct = (friends.Distinct());
+            IEnumerable<Friend> distinct = (friends.Distinct());
 
             return distinct;
         }

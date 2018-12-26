@@ -12,7 +12,7 @@ namespace TripCalculatorService.Controllers
 {
     [Route("api/friends")]
     [ApiController]
-    public class FriendController : ControllerBase
+    public class FriendController : BaseApiController
     {
         private readonly IFriendService _service;
 
@@ -24,33 +24,33 @@ namespace TripCalculatorService.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Friend>>> Get()
         {
-            return Ok(await _service.GetAll());
+            DataAccessResponse<IEnumerable<Friend>> response = await _service.GetAll();
+
+            return HandleResponse(response);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Friend>> Get(string id)
         {
-            return Ok(await _service.Get(id));
+            DataAccessResponse<Friend> response = await _service.Get(id);
+
+            return HandleResponse(response);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] Friend friend)
+        public async Task<ActionResult<string>> Post([FromBody] Friend friend)
         {
-            string response = await _service.Add(friend);
+            DataAccessResponse<string> response = await _service.Add(friend);
 
-            if (response == null) return BadRequest();
-
-            return Ok(response);
+            return HandleResponse(response);
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(string id)
+        public async Task<ActionResult<string>> Delete(string id)
         {
-            var response = await _service.Remove(id);
+            DataAccessResponse<string> response = await _service.Remove(id);
 
-            if (response == null) return BadRequest();
-
-            return Ok(response);
+            return HandleResponse(response);
         }
     }
 }

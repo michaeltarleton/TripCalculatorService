@@ -30,8 +30,8 @@ namespace TripCalculatorService.DataAccess
             if (!searchResponse.IsValid) return response.InternalServerError();
 
             IEnumerable<Friend> friends = searchResponse.Hits.Select(h => {
-                var source = h.Source;
-                source.Id  = h.Id;
+                Friend source = h.Source;
+                source.Id     = h.Id;
                 return source;
             });
 
@@ -113,7 +113,7 @@ namespace TripCalculatorService.DataAccess
             if (friendId == null) return response.NotFound();
             if (item == null) return response.NotFound();
 
-            var friendResponse = await this.Get(friendId);
+            DataAccessResponse<Friend> friendResponse = await this.Get(friendId);
 
             if (friendResponse.Status != HttpStatusCode.OK) return response.NotFound();
 
@@ -144,7 +144,7 @@ namespace TripCalculatorService.DataAccess
             if (friendId == null) return response.NotFound();
             if (purchasedItemId == null) return response.NotFound();
 
-            var friendResponse = await this.Get(friendId);
+            DataAccessResponse<Friend> friendResponse = await this.Get(friendId);
 
             if (friendResponse.Status != HttpStatusCode.OK) return response.NotFound();
 
@@ -177,7 +177,7 @@ namespace TripCalculatorService.DataAccess
             if (friendId == null) return response.NotFound();
             if (purchasedItemId == null) return response.NotFound();
 
-            var friendResponse = await this.Get(friendId);
+            DataAccessResponse<Friend> friendResponse = await this.Get(friendId);
 
             if (friendResponse.Status != HttpStatusCode.OK) return response.NotFound();
 
@@ -192,7 +192,7 @@ namespace TripCalculatorService.DataAccess
             purchasedItem.Id = purchasedItemId;
 
             friend.PurchasedItems.Remove(purchasedItemToUpdate);
-            friend.PurchasedItems.Add(purchasedItem);
+            friend.PurchasedItems.Add(purchasedItem); `
 
             IUpdateResponse<Friend> updateResponse = await _esClient.UpdateAsync<Friend>(friendId,
                                                                                          d => d
@@ -213,7 +213,7 @@ namespace TripCalculatorService.DataAccess
             if (friendId == null) return response.NotFound();
             if (purchasedItemId == null) return response.NotFound();
 
-            var friendResponse = await this.Get(friendId);
+            DataAccessResponse<Friend> friendResponse = await this.Get(friendId);
 
             if (friendResponse.Status != HttpStatusCode.OK) return response.NotFound();
 
@@ -236,7 +236,7 @@ namespace TripCalculatorService.DataAccess
 
             if (friendId == null) return response.NotFound();
 
-            var friendResponse = await this.Get(friendId);
+            DataAccessResponse<Friend> friendResponse = await this.Get(friendId);
 
             if (friendResponse.Status != HttpStatusCode.OK) return response.NotFound();
 

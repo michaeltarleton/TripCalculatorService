@@ -18,39 +18,29 @@ namespace TripCalculatorService.Services
             _repo = repo;
         }
 
-        public async Task<IEnumerable<PurchasedItem>> GetAll(string friendId)
+        public async Task<DataAccessResponse<IEnumerable<PurchasedItem>>> GetAll(string friendId)
         {
-            var response = await _repo.Get(friendId);
-
-            return response.Payload == null ? null : response.Payload.PurchasedItems.ToModel();
+            return (await _repo.GetAllPurchasedItems(friendId)).ToModel();
         }
 
-        public async Task<PurchasedItem> Get(string friendId, Guid purchasedItemId)
+        public async Task<DataAccessResponse<PurchasedItem>> Get(string friendId, Guid purchasedItemId)
         {
-            var response = await _repo.Get(friendId);
-
-            return response.Payload == null ? null : response.Payload.PurchasedItems.ToModel().FirstOrDefault(p => p.Id == purchasedItemId);
+            return (await _repo.GetPurchasedItem(friendId, purchasedItemId)).ToModel();
         }
 
-        public async Task<string> Add(string friendId, PurchasedItem purchasedItem)
+        public async Task<DataAccessResponse<string>> Add(string friendId, PurchasedItem purchasedItem)
         {
-            var response = await _repo.AddPurchasedItem(friendId, purchasedItem.ToEntity());
-
-            return response.Payload == null ? null : response.Payload;
+            return (await _repo.AddPurchasedItem(friendId, purchasedItem.ToEntity())).ToModel();
         }
 
-        public async Task<string> Remove(string friendId, Guid purchasedItemId)
+        public async Task<DataAccessResponse<string>> Remove(string friendId, Guid purchasedItemId)
         {
-            var response = await _repo.RemovePurchasedItem(friendId, purchasedItemId);
-
-            return response.Payload;
+            return (await _repo.RemovePurchasedItem(friendId, purchasedItemId)).ToModel();
         }
 
-        public async Task<string> Update(string friendId, Guid purchasedItemId, PurchasedItem purchasedItem)
+        public async Task<DataAccessResponse<string>> Update(string friendId, Guid purchasedItemId, PurchasedItem purchasedItem)
         {
-            var response = await _repo.UpdatePurchasedItem(friendId, purchasedItemId, purchasedItem.ToEntity());
-
-            return response.Payload;
+            return (await _repo.UpdatePurchasedItem(friendId, purchasedItemId, purchasedItem.ToEntity())).ToModel();
         }
     }
 }

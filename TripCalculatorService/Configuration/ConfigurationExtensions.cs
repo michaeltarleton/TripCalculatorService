@@ -27,7 +27,7 @@ namespace TripCalculatorService.Configuration
             if (services == null) throw new ArgumentNullException(nameof(services));
 
             services.AddScoped<IElasticClient> ((s) => {
-                var settings = s.GetService<AppSettings>();
+                AppSettings settings = s.GetService<AppSettings>();
 
                 if (settings == null) throw new ArgumentNullException(nameof(settings));
 
@@ -40,9 +40,9 @@ namespace TripCalculatorService.Configuration
                 string esDefaultIndex = settings.ElasticConfig.DefaultIndex;
                 if (string.IsNullOrWhiteSpace(esDefaultIndex)) throw new ArgumentNullException("The Elasticsearch default index was not found!");
 
-                var node   = new Uri(esHost);
-                var config = new ConnectionSettings(node).DefaultIndex(esDefaultIndex);
-                var client = new ElasticClient(config);
+                Uri node = new Uri(esHost);
+                ConnectionSettings config = new ConnectionSettings(node).DefaultIndex(esDefaultIndex);
+                ElasticClient client      = new ElasticClient(config);
 
                 return client;
             });

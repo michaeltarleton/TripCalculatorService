@@ -16,24 +16,29 @@ namespace TripCalculatorService.Services
             _repo = repo;
         }
 
-        public async Task<IEnumerable<Friend>> GetAll()
+        public async Task<DataAccessResponse<IEnumerable<Friend>>> GetAll()
         {
             return (await _repo.GetAll()).ToModel();
         }
 
-        public async Task<Friend> Get(string id)
+        public async Task<DataAccessResponse<Friend>> Get(string id)
         {
             return (await _repo.Get(id)).ToModel();
         }
 
-        public async Task<string> Add(Friend friend)
+        public async Task<DataAccessResponse<string>> Add(Friend friend)
         {
-            return await _repo.AddFriend(friend.ToEntity());
+            return (await _repo.AddFriend(friend.ToEntity())).ToModel();
         }
 
-        public async Task<string> Remove(string id)
+        public async Task<DataAccessResponse<string>> Update(Friend friend)
         {
-            return await _repo.RemoveFriend(id);
+            return (await _repo.AddFriend(friend.ToEntity())).ToModel();
+        }
+
+        public async Task<DataAccessResponse<string>> Remove(string id)
+        {
+            return (await _repo.RemoveFriend(id)).ToModel();
         }
     }
 }

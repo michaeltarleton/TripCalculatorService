@@ -3,6 +3,7 @@ using Nest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using TripCalculatorService.DataAccess;
 using TripCalculatorService.Interfaces;
@@ -13,7 +14,7 @@ namespace TripCalculatorService.Controllers
 {
     [Route("api/friend/{friendId}/purchased")]
     [ApiController]
-    public class PurchasedItemController : ControllerBase
+    public class PurchasedItemController : BaseApiController
     {
         private readonly IPurchasedItemService _service;
 
@@ -25,52 +26,42 @@ namespace TripCalculatorService.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PurchasedItem>>> Get(string friendId)
         {
-            IEnumerable<PurchasedItem> response = await _service.GetAll(friendId);
+            DataAccessResponse<IEnumerable<PurchasedItem>> response = await _service.GetAll(friendId);
 
-            if (response == null) return BadRequest();
-
-            return Ok(response);
+            return HandleResponse(response);
         }
 
         // GET api/values/5
         [HttpGet("{purchasedItemId}")]
         public async Task<ActionResult<PurchasedItem>> Get(string friendId, Guid purchasedItemId)
         {
-            PurchasedItem response = await _service.Get(friendId, purchasedItemId);
+            DataAccessResponse<PurchasedItem> response = await _service.Get(friendId, purchasedItemId);
 
-            if (response == null) return BadRequest();
-
-            return Ok(response);
+            return HandleResponse(response);
         }
 
         [HttpPost("")]
         public async Task<ActionResult<string>> Post(string friendId, [FromBody] PurchasedItem purchasedItem)
         {
-            string response = await _service.Add(friendId, purchasedItem);
+            DataAccessResponse<string> response = await _service.Add(friendId, purchasedItem);
 
-            if (response == null) return BadRequest();
-
-            return Ok(response);
+            return HandleResponse(response);
         }
 
         [HttpPut("{purchasedItemId}")]
         public async Task<ActionResult<string>> Put(string friendId, Guid purchasedItemId, [FromBody] PurchasedItem purchasedItem)
         {
-            string response = await _service.Update(friendId, purchasedItemId, purchasedItem);
+            DataAccessResponse<string> response = await _service.Update(friendId, purchasedItemId, purchasedItem);
 
-            if (response == null) return BadRequest();
-
-            return Ok(response);
+            return HandleResponse(response);
         }
 
         [HttpDelete("{purchasedItemId}")]
         public async Task<ActionResult<string>> Delete(string friendId, Guid purchasedItemId)
         {
-            string response = await _service.Remove(friendId, purchasedItemId);
+            DataAccessResponse<string> response = await _service.Remove(friendId, purchasedItemId);
 
-            if (response == null) return BadRequest();
-
-            return Ok(response);
+            return HandleResponse(response);
         }
     }
 }

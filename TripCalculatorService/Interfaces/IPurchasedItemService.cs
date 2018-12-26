@@ -1,16 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TripCalculatorService.DataAccess;
 using TripCalculatorService.Models;
 
 namespace TripCalculatorService.Interfaces
 {
     public interface IPurchasedItemService
     {
-        Task<IEnumerable<PurchasedItem>> GetAll(string friendId);
-        Task<PurchasedItem> Get(string friendId, Guid purchasedItemId);
-        Task<string> Add(string friendId, PurchasedItem purchasedItem);
-        Task<string> Remove(string friendId, Guid purchasedItemId);
-        Task<string> Update(string friendId, Guid purchasedItemId, PurchasedItem purchasedItem);
+        Task<DataAccessResponse<IEnumerable<PurchasedItem>>> GetAll(string friendId);
+        Task<DataAccessResponse<PurchasedItem>> Get(string friendId, Guid purchasedItemId);
+        Task<DataAccessResponse<string>> Add(string friendId, PurchasedItem purchasedItem);
+        Task<DataAccessResponse<string>> Remove(string friendId, Guid purchasedItemId);
+        Task<DataAccessResponse<string>> Update(string friendId, Guid purchasedItemId, PurchasedItem purchasedItem);
     }
 }
