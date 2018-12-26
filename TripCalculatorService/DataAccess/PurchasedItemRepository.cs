@@ -89,7 +89,7 @@ namespace TripCalculatorService.DataAccess
             if (!updateResponse.IsValid) return response.InternalServerError();
             if (updateResponse.Id == null) return response.InternalServerError();
 
-            return response.Created(updateResponse.Id);
+            return response.Created(item.Id.ToString());
         }
 
         public async Task<DataAccessResponse<string>> Update(string friendId, Guid purchasedItemId, PurchasedItem purchasedItem)
