@@ -192,7 +192,7 @@ namespace TripCalculatorService.DataAccess
             purchasedItem.Id = purchasedItemId;
 
             friend.PurchasedItems.Remove(purchasedItemToUpdate);
-            friend.PurchasedItems.Add(purchasedItem); `
+            friend.PurchasedItems.Add(purchasedItem);
 
             IUpdateResponse<Friend> updateResponse = await _esClient.UpdateAsync<Friend>(friendId,
                                                                                          d => d
