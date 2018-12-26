@@ -11,10 +11,13 @@ namespace TripCalculatorService.DataAccess
 
         public DataAccessResponse(T payload, HttpStatusCode status)
         {
+            Payload = payload;
+            Status  = status;
         }
 
         public DataAccessResponse(HttpStatusCode status)
         {
+            Status = status;
         }
 
         public DataAccessResponse()

@@ -27,6 +27,8 @@ namespace TripCalculatorService.DataAccess
 
             ISearchResponse<Friend> searchResponse = await _esClient.SearchAsync<Friend>(s => s);
 
+            if (searchResponse.Total == 0) return response.NotFound();
+
             if (!searchResponse.IsValid) return response.InternalServerError();
 
             IEnumerable<Friend> friends = searchResponse.Hits.Select(h => {
@@ -47,11 +49,11 @@ namespace TripCalculatorService.DataAccess
 
             IGetResponse<Friend> getResponse = await _esClient.GetAsync<Friend>(id);
 
+            if (!getResponse.Found) return response.NotFound();
+
             if (!getResponse.IsValid) return response.InternalServerError();
 
             Friend friend = getResponse.Source;
-
-            if (friend == null) return response.NotFound();
 
             friend.Id = getResponse.Id;
 
@@ -99,6 +101,8 @@ namespace TripCalculatorService.DataAccess
             if (id == null) return response.NotFound();
 
             IDeleteResponse deleteResponse = await _esClient.DeleteAsync<Friend>(id);
+
+            if (deleteResponse.Result == Result.NotFound) return response.NotFound();
 
             if (!deleteResponse.IsValid) return response.InternalServerError();
             if (deleteResponse.Id == null) return response.InternalServerError();

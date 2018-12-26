@@ -14,8 +14,14 @@ namespace TripCalculatorService.Controllers
                     return Ok(response.Payload);
                 case HttpStatusCode.NotFound:
                     return NotFound();
+                case HttpStatusCode.Created:
+                    return Created(response.Payload as string, response.Payload);
+                case HttpStatusCode.NoContent:
+                    return NoContent();
+                case HttpStatusCode.InternalServerError:
+                    return new StatusCodeResult(500);
                 default:
-                    return new StatusCodeResult((int)response.Status);
+                    return BadRequest();
             }
         }
     }
