@@ -28,17 +28,17 @@ namespace TripCalculatorService.Services
 
         public async Task<DataAccessResponse<string>> Add(Friend friend)
         {
-            return (await _repo.AddFriend(friend.ToEntity())).ToModel();
+            return (await _repo.Add(friend.ToEntity())).ToModel();
         }
 
         public async Task<DataAccessResponse<string>> Update(Friend friend)
         {
-            return (await _repo.AddFriend(friend.ToEntity())).ToModel();
+            return (await _repo.Add(friend.ToEntity())).ToModel();
         }
 
         public async Task<DataAccessResponse<string>> Remove(string id)
         {
-            return (await _repo.RemoveFriend(id)).ToModel();
+            return (await _repo.Remove(id)).ToModel();
         }
     }
 }

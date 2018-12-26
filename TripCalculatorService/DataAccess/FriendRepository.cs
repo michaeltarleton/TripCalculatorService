@@ -21,6 +21,23 @@ namespace TripCalculatorService.DataAccess
             _esClient = esClient;
         }
 
+        public async Task<DataAccessResponse<Friend>> Get(string id)
+        {
+            DataAccessResponse<Friend> response = new DataAccessResponse<Friend>();
+
+            IGetResponse<Friend> getResponse = await _esClient.GetAsync<Friend>(id);
+
+            if (!getResponse.Found) return response.NotFound();
+
+            if (!getResponse.IsValid) return response.InternalServerError();
+
+            Friend friend = getResponse.Source;
+
+            friend.Id = getResponse.Id;
+
+            return response.Ok(friend);;
+        }
+
         public async Task<DataAccessResponse<IEnumerable<Friend>>> GetAll()
         {
             DataAccessResponse<IEnumerable<Friend>> response = new DataAccessResponse<IEnumerable<Friend>>();
@@ -40,27 +57,10 @@ namespace TripCalculatorService.DataAccess
             if (friends == null) return response.NotFound();
             if (friends.Count() == 0) return response.NotFound();
 
-            return response.OK(friends);
+            return response.Ok(friends);
         }
 
-        public async Task<DataAccessResponse<Friend>> Get(string id)
-        {
-            DataAccessResponse<Friend> response = new DataAccessResponse<Friend>();
-
-            IGetResponse<Friend> getResponse = await _esClient.GetAsync<Friend>(id);
-
-            if (!getResponse.Found) return response.NotFound();
-
-            if (!getResponse.IsValid) return response.InternalServerError();
-
-            Friend friend = getResponse.Source;
-
-            friend.Id = getResponse.Id;
-
-            return response.OK(friend);;
-        }
-
-        public async Task<DataAccessResponse<string>> AddFriend(Friend friend)
+        public async Task<DataAccessResponse<string>> Add(Friend friend)
         {
             DataAccessResponse<string> response = new DataAccessResponse<string>();
 
@@ -75,7 +75,7 @@ namespace TripCalculatorService.DataAccess
             return response.Created(indexResponse.Id);
         }
 
-        public async Task<DataAccessResponse<string>> UpdateFriend(string id, Friend friend)
+        public async Task<DataAccessResponse<string>> Update(string id, Friend friend)
         {
             DataAccessResponse<string> response = new DataAccessResponse<string>();
 
@@ -94,7 +94,7 @@ namespace TripCalculatorService.DataAccess
             return response.NoContent(updateResponse.Id);
         }
 
-        public async Task<DataAccessResponse<string>> RemoveFriend(string id)
+        public async Task<DataAccessResponse<string>> Remove(string id)
         {
             DataAccessResponse<string> response = new DataAccessResponse<string>();
 

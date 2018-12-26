@@ -42,6 +42,7 @@ namespace TripCalculatorService
 
             services.AddTransient<IFriendRepository, FriendRepository>();
             services.AddTransient<IFriendService, FriendService>();
+            services.AddTransient<IPurchasedItemRepository, PurchasedItemRepository>();
             services.AddTransient<IPurchasedItemService, PurchasedItemService>();
 
             services.AddSwaggerDocument();

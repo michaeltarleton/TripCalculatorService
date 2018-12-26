@@ -24,7 +24,7 @@ namespace TripCalculatorService.DataAccess
         {
         }
 
-        public DataAccessResponse<T> OK(T payload)
+        public DataAccessResponse<T> Ok(T payload)
         {
             this.Payload = payload;
             this.Status  = HttpStatusCode.OK;

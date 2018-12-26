@@ -8,10 +8,10 @@ namespace TripCalculatorService.Interfaces
 {
     public interface IFriendRepository
     {
-        Task<DataAccessResponse<IEnumerable<Friend>>> GetAll();
         Task<DataAccessResponse<Friend>> Get(string id);
-        Task<DataAccessResponse<string>> AddFriend(Friend friend);
-        Task<DataAccessResponse<string>> UpdateFriend(string id, Friend friend);
-        Task<DataAccessResponse<string>> RemoveFriend(string id);
+        Task<DataAccessResponse<IEnumerable<Friend>>> GetAll();
+        Task<DataAccessResponse<string>> Add(Friend friend);
+        Task<DataAccessResponse<string>> Update(string id, Friend friend);
+        Task<DataAccessResponse<string>> Remove(string id);
     }
 }
