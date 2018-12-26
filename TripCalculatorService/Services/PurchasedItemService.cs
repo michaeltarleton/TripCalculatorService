@@ -11,9 +11,9 @@ namespace TripCalculatorService.Services
 {
     public class PurchasedItemService : IPurchasedItemService
     {
-        private readonly IFriendRepository _repo;
+        private readonly IPurchasedItemRepository _repo;
 
-        public PurchasedItemService(IFriendRepository repo)
+        public PurchasedItemService(IPurchasedItemRepository repo)
         {
             _repo = repo;
         }
