@@ -18,9 +18,9 @@ namespace TripCalculatorService.Entities
             string[]        names = { "Sam", "Fred", "James", "John", "Sarah", "Jill" };
             PurchasedItem[] items =
             {
-                new PurchasedItem { Id = Guid.NewGuid(), Name = "Chips",     Price = 8.00M },
-                new PurchasedItem { Id = Guid.NewGuid(), Name = "Cheese",    Price = 8.00M },
-                new PurchasedItem { Id = Guid.NewGuid(), Name = "Soda",      Price = 8.00M },
+                new PurchasedItem { Id = Guid.NewGuid(), Name = "Chips",     Price = 2.00M },
+                new PurchasedItem { Id = Guid.NewGuid(), Name = "Cheese",    Price = 4.00M },
+                new PurchasedItem { Id = Guid.NewGuid(), Name = "Soda",      Price = 6.00M },
                 new PurchasedItem { Id = Guid.NewGuid(), Name = "Chocolate", Price = 8.00M }
             };
 

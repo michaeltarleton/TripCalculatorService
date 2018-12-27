@@ -60,7 +60,7 @@ namespace TripCalculatorService
 
             app.SeedElasticsearch();
 
-            app.UseHttpsRedirection();
+            // Disabled until we go live! // app.UseHttpsRedirection();
             app.UseMvc();
 
             app.UseSwagger();

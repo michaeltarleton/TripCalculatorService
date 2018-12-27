@@ -10,7 +10,7 @@ using TripCalculatorService.Models;
 
 namespace TripCalculatorService.Controllers
 {
-    [Route("api/friends")]
+    [Route("api/friend")]
     [ApiController]
     public class FriendController : BaseApiController
     {
