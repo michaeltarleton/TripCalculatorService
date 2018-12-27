@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Net;
 using TripCalculatorService.DataAccess;
 
@@ -8,7 +9,7 @@ namespace TripCalculatorService.Controllers
     {
         protected ActionResult<T> HandleResponse<T>(DataAccessResponse<T> response)
         {
-            if (response == null) return new StatusCodeResult(500);
+            if (response == null) return BadRequest(new NullReferenceException("The data access response is null!"));
 
             switch (response.Status)
             {
