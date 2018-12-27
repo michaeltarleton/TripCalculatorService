@@ -8,7 +8,7 @@ namespace TripCalculatorService.Controllers
     {
         protected ActionResult<T> HandleResponse<T>(DataAccessResponse<T> response)
         {
-            if (response == null) new StatusCodeResult(500);
+            if (response == null) return new StatusCodeResult(500);
 
             switch (response.Status)
             {
