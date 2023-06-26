@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:2.2-sdk-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0-alpine AS build
 WORKDIR /app
 COPY TripCalculatorService/*.csproj ./TripCalculatorService/
 COPY *.sln ./
