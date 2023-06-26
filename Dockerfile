@@ -7,7 +7,7 @@ COPY TripCalculatorService/. ./TripCalculatorService/
 WORKDIR /app/TripCalculatorService
 RUN dotnet publish -c Release -o out
 
-FROM microsoft/dotnet:2.2-aspnetcore-runtime-alpine AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:7.0-alpine AS runtime
 WORKDIR /app
 COPY --from=build /app/TripCalculatorService/out ./
 ENTRYPOINT ["dotnet", "TripCalculatorService.dll"]
