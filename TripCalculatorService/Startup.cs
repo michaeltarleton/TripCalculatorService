@@ -47,6 +47,8 @@ namespace TripCalculatorService
 
             services.AddSwaggerDocument();
 
+            services.AddMvc(o => o.EnableEndpointRouting = false);
+            
             return services.BuildServiceProvider();
         }
 
